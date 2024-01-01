@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import styled from 'styled-components';
 import Product from './components/Product.jsx';
 import ProductData from '../../data/product';
 import Pagination from './components/Pagination.jsx';
@@ -13,19 +14,26 @@ const Main = () => {
         totalPages={ProductData.length}
         onPageChange={setCurrentPage}
       />
-      {ProductData.slice(currentPage - 1, currentPage + 7).map(
-        (product, index) => {
-          return (
-            <Product
-              key={product.productId}
-              product={product}
-              order={index + 1 + (currentPage - 1) * 8}
-            />
-          );
-        }
-      )}
+      <ProductContainer>
+        {ProductData.slice(currentPage - 1, currentPage + 7).map(
+          (product, index) => {
+            return (
+              <Product
+                key={product.productId}
+                product={product}
+                order={index + 1 + (currentPage - 1) * 8}
+              />
+            );
+          }
+        )}
+      </ProductContainer>
     </>
   );
 };
 
 export default Main;
+
+const ProductContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+`;

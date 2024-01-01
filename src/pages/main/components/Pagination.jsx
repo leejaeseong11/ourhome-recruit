@@ -71,19 +71,21 @@ const PaginationContainer = styled.ul`
 `;
 
 const PaginationButton = styled.button`
-  border: 1px solid #ccc;
-  background-color: ${(props) => (props.$active ? '#007bff' : '#fff')};
-  color: ${(props) => (props.$active ? '#fff' : '#333')};
+  border: 1px solid;
+  background-color: ${(props) => (props.$active ? '#ff6500' : '#0000')};
+  border-color: ${(props) => (props.$active ? '#ff6500' : '#888')};
+  color: ${(props) => (props.$active ? '#fff' : '#000')};
 
   padding: 8px 12px;
   margin: 0 4px;
 
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s, border 0.3s;
 
-  &:hover {
-    background-color: ${(props) => (props.$active ? '#007bff' : '#e0e0e0')};
+  &:hover:enabled {
+    background-color: ${(props) => (props.$active ? '#ff6500' : '#888')};
     color: ${(props) => (props.$active ? '#fff' : '#000')};
-    border-color: ${(props) => (props.$active ? '#007bff' : '#999')};
+  }
+  &:hover:disabled {
+    cursor: not-allowed;
   }
 `;
