@@ -63,6 +63,7 @@ export default Pagination;
 
 const PaginationContainer = styled.ul`
   display: flex;
+  justify-content: center;
 
   padding: 0;
   margin: 20px 0;

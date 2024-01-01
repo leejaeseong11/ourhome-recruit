@@ -8,12 +8,7 @@ const Main = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   return (
-    <>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={Math.ceil(ProductData.length / 8)}
-        onPageChange={setCurrentPage}
-      />
+    <MainContainer>
       <ProductContainer>
         {ProductData.slice((currentPage - 1) * 8, currentPage * 8).map(
           (product, index) => {
@@ -27,11 +22,20 @@ const Main = () => {
           }
         )}
       </ProductContainer>
-    </>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={Math.ceil(ProductData.length / 8)}
+        onPageChange={setCurrentPage}
+      />
+    </MainContainer>
   );
 };
 
 export default Main;
+
+const MainContainer = styled.div`
+  margin: 0 48px;
+`;
 
 const ProductContainer = styled.div`
   display: grid;

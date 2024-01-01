@@ -2,6 +2,11 @@ import styled from 'styled-components';
 
 // 상품 카드
 const Product = ({ product, order }) => {
+  const cartButtonClickHandler = () => {
+    const goCart = window.confirm(
+      '선택한 상품이 장바구니에 담겼습니다.\n장바구니로 이동 하겠습니까?'
+    );
+  };
   return (
     <ProductContainer>
       <ProductOrder>{order < 10 ? '0' + order : order}</ProductOrder>
@@ -25,11 +30,14 @@ const Product = ({ product, order }) => {
             </ProductSaleRate>
           )}
         </ProductPriceContainer>
-        <div>
-          {product.tags.map((tag) => (
-            <ProductTag>{tag}</ProductTag>
-          ))}
-        </div>
+        <TagContainer>
+          <div>
+            {product.tags.map((tag, index) => (
+              <ProductTag key={index}>{tag}</ProductTag>
+            ))}
+          </div>
+          <CartButton onClick={cartButtonClickHandler}>장바구니</CartButton>
+        </TagContainer>
       </ProductInfo>
     </ProductContainer>
   );
@@ -89,6 +97,27 @@ const ProductPriceBeforeDiscount = styled.del`
 
 const ProductSaleRate = styled.em`
   color: #ff6500;
+`;
+
+const CartButton = styled.button`
+  background-color: #ff6500;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+
+  padding: 4px;
+  cursor: pointer;
+
+  font-size: 1rem;
+  height: 28px;
+  white-space: nowrap;
+`;
+
+const TagContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  width: 100%;
 `;
 
 const ProductTag = styled.span`
