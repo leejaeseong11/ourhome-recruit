@@ -11,11 +11,11 @@ const Main = () => {
     <>
       <Pagination
         currentPage={currentPage}
-        totalPages={ProductData.length}
+        totalPages={Math.ceil(ProductData.length / 8)}
         onPageChange={setCurrentPage}
       />
       <ProductContainer>
-        {ProductData.slice(currentPage - 1, currentPage + 7).map(
+        {ProductData.slice((currentPage - 1) * 8, currentPage * 8).map(
           (product, index) => {
             return (
               <Product
