@@ -2,15 +2,31 @@ import styled from 'styled-components';
 
 // 상품 카드
 const Product = ({ product, order }) => {
-  const cartButtonClickHandler = () => {
+  // 로컬 스토리지에 장바구니 상품 저장
+  const cartButtonClickHandler = (e) => {
+    console.log(e.target);
+    const cartItems = localStorage.getItem('cart_items');
+    if (cartItems) {
+      localStorage.setItem('cart_items', `${e.currentTarget.id}^${cartItems}`);
+    } else {
+      localStorage.setItem('cart_items', `${e.currentTarget.id}`);
+    }
     const goCart = window.confirm(
       '선택한 상품이 장바구니에 담겼습니다.\n장바구니로 이동 하겠습니까?'
     );
+    if (goCart) {
+      window.location.href = '/cart';
+    }
   };
   return (
     <ProductContainer>
       <ProductOrder>{order < 10 ? '0' + order : order}</ProductOrder>
-      <ProductImage src={product.image} alt={product.title} />
+      <ProductImageContainer>
+        <ProductImage src={product.image} alt={product.title} />
+        <CartIconButton id={product.productId} onClick={cartButtonClickHandler}>
+          <img src="shopping_cart.png" alt="cart-icon" />
+        </CartIconButton>
+      </ProductImageContainer>
       <ProductInfo>
         <ProductTitle>{product.title}</ProductTitle>
         <ProductSubTitle>{product.subTitle}</ProductSubTitle>
@@ -36,7 +52,9 @@ const Product = ({ product, order }) => {
               <ProductTag key={index}>{tag}</ProductTag>
             ))}
           </div>
-          <CartButton onClick={cartButtonClickHandler}>장바구니</CartButton>
+          <CartButton id={product.productId} onClick={cartButtonClickHandler}>
+            장바구니
+          </CartButton>
         </TagContainer>
       </ProductInfo>
     </ProductContainer>
@@ -54,6 +72,37 @@ const ProductContainer = styled.div`
 
 const ProductOrder = styled.h3`
   align-self: flex-start;
+`;
+const ProductImageContainer = styled.div`
+  position: relative;
+`;
+
+const CartIconButton = styled.div`
+  background-color: #fff;
+  border: none;
+  border-radius: 50%; /* 이미지를 원형으로 만들기 위해 추가 */
+
+  padding: 8px;
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease;
+
+  height: 40px;
+  width: 40px;
+  opacity: 0;
+
+  cursor: pointer;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+
+  ${ProductImageContainer}:hover & {
+    opacity: 0.8;
+  }
 `;
 
 const ProductImage = styled.img`
@@ -80,6 +129,8 @@ const ProductSubTitle = styled.p`
 const ProductPriceContainer = styled.div`
   display: flex;
   align-items: flex-end;
+
+  white-space: nowrap;
 `;
 
 const ProductPrice = styled.span`
@@ -118,6 +169,8 @@ const TagContainer = styled.div`
   justify-content: space-between;
 
   width: 100%;
+
+  white-space: nowrap;
 `;
 
 const ProductTag = styled.span`
