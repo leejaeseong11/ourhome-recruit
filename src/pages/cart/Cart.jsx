@@ -9,12 +9,13 @@ const Cart = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [isItem, setIsItem] = useState(false);
   useEffect(() => {
-    if (localStorage.getItem('cart_items') == null) {
+    let cartItemsInStorage = localStorage.getItem('cart_items');
+    if (cartItemsInStorage == null || cartItemsInStorage === '{}') {
       return;
     } else {
       setIsItem(true);
     }
-    const cartItemsInStorage = JSON.parse(localStorage.getItem('cart_items'));
+    cartItemsInStorage = JSON.parse(cartItemsInStorage);
     setCartItems(cartItemsInStorage);
 
     setTotalPrice(
@@ -80,7 +81,6 @@ const Cart = () => {
                   <CartProduct
                     key={index}
                     product={product}
-                    amount={cartItems[id]}
                     setCartItems={setCartItems}
                     setTotalPrice={setTotalPrice}
                   />

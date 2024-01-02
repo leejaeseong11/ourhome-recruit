@@ -1,9 +1,13 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // 장바구니에 담긴 상품
-const CartProduct = ({ product, amount, setCartItems, setTotalPrice }) => {
-  const [cartAmount, setCartAmount] = useState(amount);
+const CartProduct = ({ product, setCartItems, setTotalPrice }) => {
+  const [cartAmount, setCartAmount] = useState(0);
+  useEffect(() => {
+    const cartItemsInStorage = JSON.parse(localStorage.getItem('cart_items'));
+    setCartAmount(cartItemsInStorage[' ' + product.productId]);
+  }, [product.productId]);
   // 상품 체크에 따른 금액 설정
   const checkBoxClickHandler = (e) => {
     if (e.target.checked) {
@@ -49,8 +53,11 @@ const CartProduct = ({ product, amount, setCartItems, setTotalPrice }) => {
       const cartItemsInStorage = JSON.parse(localStorage.getItem('cart_items'));
       delete cartItemsInStorage[' ' + product.productId];
       localStorage.setItem('cart_items', JSON.stringify(cartItemsInStorage));
-      setCartItems(cartItemsInStorage);
-      console.log(cartAmount);
+      setCartItems((prevCartItems) => {
+        const updatedCartItems = { ...prevCartItems };
+        delete updatedCartItems[' ' + product.productId];
+        return updatedCartItems;
+      });
     }
   };
   return (
