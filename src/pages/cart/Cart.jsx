@@ -1,7 +1,22 @@
 import styled from 'styled-components';
 import CartProduct from './components/CartProduct.jsx';
+import ProductData from '../../data/product';
+import { useEffect, useState } from 'react';
 
 const Cart = () => {
+  const [cartItems, setCartItems] = useState({});
+  useEffect(() => {
+    const cartItemsInStorage = localStorage.getItem('cart_items');
+    setCartItems(
+      cartItemsInStorage.split('^').reduce((acc, cur) => {
+        if (!acc[cur]) {
+          acc[cur] = 0;
+        }
+        acc[cur] += 1;
+        return acc;
+      }, {})
+    );
+  }, []);
   return (
     <CartTable>
       <CartTableCaption>장바구니</CartTableCaption>
@@ -28,7 +43,12 @@ const Cart = () => {
         </tr>
       </thead>
       <tbody>
-        <CartProduct />
+        {Object.keys(cartItems).map((id, index) => {
+          const product = ProductData.find((p) => p.productId === Number(id));
+          return (
+            <CartProduct key={index} product={product} amount={cartItems[id]} />
+          );
+        })}
       </tbody>
       <tfoot>
         <tr>

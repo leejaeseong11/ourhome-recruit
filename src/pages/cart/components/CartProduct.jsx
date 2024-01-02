@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 // 장바구니에 담긴 상품
-const CartProduct = () => {
+const CartProduct = ({ product, amount }) => {
   const checkBoxClickHandler = (e) => {
     console.log(e.target.value);
   };
@@ -19,25 +19,23 @@ const CartProduct = () => {
       <ProductTd>
         <ProductCont>
           <ProductThum>
-            <img
-              src="https://mall.ourhome.co.kr//attach_file/20231102/1B4E9A9BF3FA4F5EB6156A242E0F03DD.jpg"
-              alt=""
-            />
+            <img src={product.image} alt={product.title} />
           </ProductThum>
-          <ProductTit>
-            [미니멜츠]구슬 아이스크림 4종 혼합(20개)[미니멜츠]구슬 아이스크림
-            4종 혼합(20개) [미니멜츠]구슬 아이스크림 4종
-            혼합(20개)[미니멜츠]구슬 아이스크림 4종 혼합(20개)
-          </ProductTit>
+          <ProductTit>{product.title}</ProductTit>
         </ProductCont>
       </ProductTd>
       <ProductTd>
         <ProductDiscountPrice>
-          <b>23,500</b>원
+          <b>{Number(product.price).toLocaleString('ko-KR')}</b>원
         </ProductDiscountPrice>
         <br />
         <ProductSalePrice>
-          <b>29,900</b>원
+          <b>
+            {product.priceBeforeDiscount
+              ? Number(product.priceBeforeDiscount).toLocaleString('ko-KR')
+              : Number(product.price).toLocaleString('ko-KR')}
+          </b>
+          원
         </ProductSalePrice>
       </ProductTd>
       <ProductTd>
@@ -50,20 +48,19 @@ const CartProduct = () => {
             data-sell-mon="23500"
             data-delivery-type="N"
             data-each-delivery="Y"
-            value="4"
+            value={amount}
             data-delivery-amt="3000"
             data-delivery-free="30000"
             data-delivery-gubun="O"
-            class="numeric"
             data-jirisansoo-yn="N"
-            maxlength="5"
+            maxLength="5"
           />
           <button type="button">+</button>
         </ProductAmount>
       </ProductTd>
       <ProductTd>
         <ProductDiscountPrice>
-          <b>94,000</b>원
+          <b>{Number(product.price * amount).toLocaleString('ko-KR')}</b>원
         </ProductDiscountPrice>
       </ProductTd>
       <ProductTd>
