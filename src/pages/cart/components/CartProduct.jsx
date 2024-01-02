@@ -18,7 +18,7 @@ const CartProduct = ({ product, amount, setCartItems, setTotalPrice }) => {
     if (isNaN(e.target.value)) {
       e.target.value = '';
     }
-    cartItemsInStorage[product.productId] = e.target.value;
+    cartItemsInStorage[' ' + product.productId] = e.target.value;
     setCartItems(cartItemsInStorage);
     setCartAmount(e.target.value);
     localStorage.setItem('cart_items', JSON.stringify(cartItemsInStorage));
@@ -28,14 +28,14 @@ const CartProduct = ({ product, amount, setCartItems, setTotalPrice }) => {
       return;
     }
     const cartItemsInStorage = JSON.parse(localStorage.getItem('cart_items'));
-    cartItemsInStorage[product.productId] = cartAmount - 1;
+    cartItemsInStorage[' ' + product.productId] = cartAmount - 1;
     setCartItems(cartItemsInStorage);
     setCartAmount((cartAmount) => Number(cartAmount) - 1);
     localStorage.setItem('cart_items', JSON.stringify(cartItemsInStorage));
   };
   const increaseButtonHandler = () => {
     const cartItemsInStorage = JSON.parse(localStorage.getItem('cart_items'));
-    cartItemsInStorage[product.productId] = cartAmount + 1;
+    cartItemsInStorage[' ' + product.productId] = cartAmount + 1;
     setCartItems(cartItemsInStorage);
     setCartAmount((cartAmount) => Number(cartAmount) + 1);
     localStorage.setItem('cart_items', JSON.stringify(cartItemsInStorage));
@@ -47,9 +47,10 @@ const CartProduct = ({ product, amount, setCartItems, setTotalPrice }) => {
     );
     if (isDelete) {
       const cartItemsInStorage = JSON.parse(localStorage.getItem('cart_items'));
-      delete cartItemsInStorage[product.productId];
-      setCartItems(cartItemsInStorage);
+      delete cartItemsInStorage[' ' + product.productId];
       localStorage.setItem('cart_items', JSON.stringify(cartItemsInStorage));
+      setCartItems(cartItemsInStorage);
+      console.log(cartAmount);
     }
   };
   return (

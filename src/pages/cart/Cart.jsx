@@ -70,20 +70,22 @@ const Cart = () => {
             </tr>
           </thead>
           <tbody>
-            {Object.keys(cartItems).map((id, index) => {
-              const product = ProductData.find(
-                (p) => p.productId === Number(id)
-              );
-              return (
-                <CartProduct
-                  key={index}
-                  product={product}
-                  amount={cartItems[id]}
-                  setCartItems={setCartItems}
-                  setTotalPrice={setTotalPrice}
-                />
-              );
-            })}
+            {Object.keys(cartItems)
+              .reverse()
+              .map((id, index) => {
+                const product = ProductData.find(
+                  (p) => p.productId === Number(id)
+                );
+                return (
+                  <CartProduct
+                    key={index}
+                    product={product}
+                    amount={cartItems[id]}
+                    setCartItems={setCartItems}
+                    setTotalPrice={setTotalPrice}
+                  />
+                );
+              })}
           </tbody>
           <tfoot>
             <tr>

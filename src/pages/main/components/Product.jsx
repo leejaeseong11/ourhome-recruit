@@ -4,17 +4,16 @@ import styled from 'styled-components';
 const Product = ({ product, order }) => {
   // 로컬 스토리지에 장바구니 상품 저장
   const cartButtonClickHandler = (e) => {
-    console.log(e.target);
     let cartItems = localStorage.getItem('cart_items');
     if (cartItems) {
       cartItems = JSON.parse(cartItems);
-      cartItems[e.currentTarget.id]
-        ? (cartItems[e.currentTarget.id] += 1)
-        : (cartItems[e.currentTarget.id] = 1);
+      cartItems[' ' + e.currentTarget.id]
+        ? (cartItems[' ' + e.currentTarget.id] += 1)
+        : (cartItems[' ' + e.currentTarget.id] = 1);
 
       localStorage.setItem('cart_items', JSON.stringify(cartItems));
     } else {
-      localStorage.setItem('cart_items', `{"${e.currentTarget.id}": 1}`);
+      localStorage.setItem('cart_items', `{"${' ' + e.currentTarget.id}": 1}`);
     }
     const goCart = window.confirm(
       '선택한 상품이 장바구니에 담겼습니다.\n장바구니로 이동 하겠습니까?'
