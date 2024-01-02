@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Product from './components/Product.jsx';
 import ProductData from '../../data/product';
 import Pagination from './components/Pagination.jsx';
+
 // 상품 페이지
 const Main = () => {
   const [currentPage, setCurrentPage] = useState(1);

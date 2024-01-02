@@ -3,74 +3,121 @@ import CartProduct from './components/CartProduct.jsx';
 import ProductData from '../../data/product';
 import { useEffect, useState } from 'react';
 
+// 장바구니 테이블
 const Cart = () => {
   const [cartItems, setCartItems] = useState({});
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [isItem, setIsItem] = useState(false);
   useEffect(() => {
-    const cartItemsInStorage = localStorage.getItem('cart_items');
-    setCartItems(
-      cartItemsInStorage.split('^').reduce((acc, cur) => {
-        if (!acc[cur]) {
-          acc[cur] = 0;
-        }
-        acc[cur] += 1;
-        return acc;
-      }, {})
+    if (localStorage.getItem('cart_items') == null) {
+      return;
+    } else {
+      setIsItem(true);
+    }
+    const cartItemsInStorage = JSON.parse(localStorage.getItem('cart_items'));
+    setCartItems(cartItemsInStorage);
+
+    setTotalPrice(
+      Object.keys(cartItemsInStorage).reduce(
+        (acc, cur) =>
+          acc +
+          ProductData.find((p) => p.productId === Number(cur)).price *
+            cartItemsInStorage[cur],
+        0
+      )
     );
   }, []);
+
+  // 상품 수량 변경 시 금액 설정
+  useEffect(() => {
+    const cartItemsInStorage = JSON.parse(localStorage.getItem('cart_items'));
+
+    setTotalPrice(
+      Object.keys(cartItemsInStorage).reduce(
+        (acc, cur) =>
+          acc +
+          ProductData.find((p) => p.productId === Number(cur)).price *
+            cartItemsInStorage[cur],
+        0
+      )
+    );
+  }, [cartItems]);
   return (
-    <CartTable>
-      <CartTableCaption>장바구니</CartTableCaption>
-      <colgroup>
-        <col style={{ width: '25px' }} />
-        <col style={{ width: '10%' }} />
-        <col style={{ width: 'auto' }} />
-        <col style={{ width: '11%' }} />
-        <col style={{ width: '10%' }} />
-        <col style={{ width: '11%' }} />
-        <col style={{ width: '124px' }} />
-      </colgroup>
-      <thead>
-        <tr>
-          <CartTableTh scope="col">
-            <HiddenSpan>선택</HiddenSpan>
-          </CartTableTh>
-          <CartTableTh scope="col">브랜드</CartTableTh>
-          <CartTableTh scope="col">상품명</CartTableTh>
-          <CartTableTh scope="col">구매가</CartTableTh>
-          <CartTableTh scope="col">수량</CartTableTh>
-          <CartTableTh scope="col">금액</CartTableTh>
-          <CartTableTh scope="col">선택</CartTableTh>
-        </tr>
-      </thead>
-      <tbody>
-        {Object.keys(cartItems).map((id, index) => {
-          const product = ProductData.find((p) => p.productId === Number(id));
-          return (
-            <CartProduct key={index} product={product} amount={cartItems[id]} />
-          );
-        })}
-      </tbody>
-      <tfoot>
-        <tr>
-          <CartTableTd colSpan="8">
-            <TextSpan>총 금액</TextSpan>
-            <CostSpan>
-              <b>158,520</b>원
-            </CostSpan>
-            <SymbolSpan>+</SymbolSpan>
-            <TextSpan>배송비</TextSpan>
-            <CostSpan>
-              <b>0</b>원
-            </CostSpan>
-            <SymbolSpan>=</SymbolSpan>
-            <TextSpan>결제 금액</TextSpan>
-            <CostSpan>
-              <b>158,520</b>원
-            </CostSpan>
-          </CartTableTd>
-        </tr>
-      </tfoot>
-    </CartTable>
+    <>
+      {isItem ? (
+        <CartTable>
+          <CartTableCaption>장바구니</CartTableCaption>
+          <colgroup>
+            <col style={{ width: '25px' }} />
+            <col style={{ width: '10%' }} />
+            <col style={{ width: 'auto' }} />
+            <col style={{ width: '11%' }} />
+            <col style={{ width: '10%' }} />
+            <col style={{ width: '11%' }} />
+            <col style={{ width: '124px' }} />
+          </colgroup>
+          <thead>
+            <tr>
+              <CartTableTh scope="col">
+                <HiddenSpan>선택</HiddenSpan>
+              </CartTableTh>
+              <CartTableTh scope="col">브랜드</CartTableTh>
+              <CartTableTh scope="col">상품명</CartTableTh>
+              <CartTableTh scope="col">구매가</CartTableTh>
+              <CartTableTh scope="col">수량</CartTableTh>
+              <CartTableTh scope="col">금액</CartTableTh>
+              <CartTableTh scope="col">선택</CartTableTh>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.keys(cartItems).map((id, index) => {
+              const product = ProductData.find(
+                (p) => p.productId === Number(id)
+              );
+              return (
+                <CartProduct
+                  key={index}
+                  product={product}
+                  amount={cartItems[id]}
+                  setCartItems={setCartItems}
+                  setTotalPrice={setTotalPrice}
+                />
+              );
+            })}
+          </tbody>
+          <tfoot>
+            <tr>
+              <CartTableTd colSpan="8">
+                <TextSpan>총 금액</TextSpan>
+                <CostSpan>
+                  <b>{totalPrice.toLocaleString('ko-KR')}</b>원
+                </CostSpan>
+                <SymbolSpan>+</SymbolSpan>
+                <TextSpan>배송비</TextSpan>
+                <CostSpan>
+                  <b>{totalPrice >= 30000 ? '0' : '3,000'}</b>원
+                </CostSpan>
+                <DelivaryTextSpan>
+                  (3만원이상 구매 시 무료배송)
+                </DelivaryTextSpan>
+                <SymbolSpan>=</SymbolSpan>
+                <TextSpan>결제 금액</TextSpan>
+                <CostSpan>
+                  <b>
+                    {totalPrice >= 30000
+                      ? totalPrice.toLocaleString('ko-KR')
+                      : (totalPrice + 3000).toLocaleString('ko-KR')}
+                  </b>
+                  원
+                </CostSpan>
+              </CartTableTd>
+            </tr>
+          </tfoot>
+        </CartTable>
+      ) : (
+        <h3 style={{ marginTop: '100px' }}>장바구니가 비어 있습니다.</h3>
+      )}
+    </>
   );
 };
 
@@ -116,6 +163,13 @@ const CartTableTd = styled.td`
 const TextSpan = styled.span`
   margin-right: 12px;
   vertical-align: middle;
+`;
+
+const DelivaryTextSpan = styled.span`
+  color: #888;
+
+  vertical-align: sub;
+  font-size: 0.875rem;
 `;
 
 const CostSpan = styled.span`

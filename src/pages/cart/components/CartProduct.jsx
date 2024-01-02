@@ -1,9 +1,56 @@
 import styled from 'styled-components';
+import { useState } from 'react';
 
 // 장바구니에 담긴 상품
-const CartProduct = ({ product, amount }) => {
+const CartProduct = ({ product, amount, setCartItems, setTotalPrice }) => {
+  const [cartAmount, setCartAmount] = useState(amount);
+  // 상품 체크에 따른 금액 설정
   const checkBoxClickHandler = (e) => {
-    console.log(e.target.value);
+    if (e.target.checked) {
+      setTotalPrice((totalPrice) => totalPrice + product.price * cartAmount);
+    } else {
+      setTotalPrice((totalPrice) => totalPrice - product.price * cartAmount);
+    }
+  };
+  // 상품 수량 변경 시
+  const amountChangeHandler = (e) => {
+    const cartItemsInStorage = JSON.parse(localStorage.getItem('cart_items'));
+    if (isNaN(e.target.value)) {
+      e.target.value = '';
+    }
+    cartItemsInStorage[product.productId] = e.target.value;
+    setCartItems(cartItemsInStorage);
+    setCartAmount(e.target.value);
+    localStorage.setItem('cart_items', JSON.stringify(cartItemsInStorage));
+  };
+  const decreaseButtonHandler = () => {
+    if (cartAmount === 0) {
+      return;
+    }
+    const cartItemsInStorage = JSON.parse(localStorage.getItem('cart_items'));
+    cartItemsInStorage[product.productId] = cartAmount - 1;
+    setCartItems(cartItemsInStorage);
+    setCartAmount((cartAmount) => Number(cartAmount) - 1);
+    localStorage.setItem('cart_items', JSON.stringify(cartItemsInStorage));
+  };
+  const increaseButtonHandler = () => {
+    const cartItemsInStorage = JSON.parse(localStorage.getItem('cart_items'));
+    cartItemsInStorage[product.productId] = cartAmount + 1;
+    setCartItems(cartItemsInStorage);
+    setCartAmount((cartAmount) => Number(cartAmount) + 1);
+    localStorage.setItem('cart_items', JSON.stringify(cartItemsInStorage));
+  };
+  // 상품 삭제 시
+  const deleteButtonClickHandler = () => {
+    const isDelete = window.confirm(
+      '삭제 시 복원되지 않습니다. 삭제하시겠습니까?'
+    );
+    if (isDelete) {
+      const cartItemsInStorage = JSON.parse(localStorage.getItem('cart_items'));
+      delete cartItemsInStorage[product.productId];
+      setCartItems(cartItemsInStorage);
+      localStorage.setItem('cart_items', JSON.stringify(cartItemsInStorage));
+    }
   };
   return (
     <tr>
@@ -12,7 +59,8 @@ const CartProduct = ({ product, amount }) => {
           onClick={checkBoxClickHandler}
           type="checkbox"
           id="CART1"
-          value="202418898719"
+          value={product.productId}
+          defaultChecked
         />
       </td>
       <td>아워홈</td>
@@ -40,31 +88,29 @@ const CartProduct = ({ product, amount }) => {
       </ProductTd>
       <ProductTd>
         <ProductAmount>
-          <button type="button">-</button>
+          <button type="button" onClick={decreaseButtonHandler}>
+            -
+          </button>
           <ProductAmountInput
             type="text"
-            title="수량 직접입력"
-            name="qty"
-            data-sell-mon="23500"
-            data-delivery-type="N"
-            data-each-delivery="Y"
-            value={amount}
-            data-delivery-amt="3000"
-            data-delivery-free="30000"
-            data-delivery-gubun="O"
-            data-jirisansoo-yn="N"
+            value={cartAmount}
             maxLength="5"
+            onChange={amountChangeHandler}
           />
-          <button type="button">+</button>
+          <button type="button" onClick={increaseButtonHandler}>
+            +
+          </button>
         </ProductAmount>
       </ProductTd>
       <ProductTd>
         <ProductDiscountPrice>
-          <b>{Number(product.price * amount).toLocaleString('ko-KR')}</b>원
+          <b>{Number(product.price * cartAmount).toLocaleString('ko-KR')}</b>원
         </ProductDiscountPrice>
       </ProductTd>
       <ProductTd>
-        <ItemDeleteButton type="button">삭제하기</ItemDeleteButton>
+        <ItemDeleteButton type="button" onClick={deleteButtonClickHandler}>
+          삭제하기
+        </ItemDeleteButton>
       </ProductTd>
     </tr>
   );
@@ -138,6 +184,8 @@ const ProductTit = styled.strong`
 
 const ProductDiscountPrice = styled.span`
   font-size: 1.125rem;
+
+  white-space: nowrap;
 `;
 
 const ProductSalePrice = styled.span`
