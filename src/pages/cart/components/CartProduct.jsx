@@ -53,11 +53,7 @@ const CartProduct = ({ product, setCartItems, setTotalPrice }) => {
       const cartItemsInStorage = JSON.parse(localStorage.getItem('cart_items'));
       delete cartItemsInStorage[' ' + product.productId];
       localStorage.setItem('cart_items', JSON.stringify(cartItemsInStorage));
-      setCartItems((prevCartItems) => {
-        const updatedCartItems = { ...prevCartItems };
-        delete updatedCartItems[' ' + product.productId];
-        return updatedCartItems;
-      });
+      setCartItems(cartItemsInStorage);
     }
   };
   return (

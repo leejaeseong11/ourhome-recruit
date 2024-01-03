@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
+# 상품 데이터 수집을 위한 크롤링 코드
 url = "https://mall.ourhome.co.kr/mall/product/list.do"
 response = requests.get(url)
 
